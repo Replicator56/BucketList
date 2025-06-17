@@ -9,14 +9,10 @@
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 </head>
 <body>
-<header>
-    {% include('include/navigation.html.twig') %}
-</header>
-<main>
-    {% block main %}{%  endblock %}
-</main>
-<footer>
-    <p>&copy; Bucket-List 2025</p>
-</footer>
+{% include('include/header.html.twig') %}
+
+{% block main %}{%  endblock %}
+
+{% include('include/footer.html.twig') %}
 </body>
 </html>

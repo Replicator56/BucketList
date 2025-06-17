@@ -29,6 +29,18 @@ nav {
     height: 5rem;
 }
 
+main {
+    margin: 2rem auto;
+    width: 80vw;
+    flex: 1;
+}
+
+footer {
+    background-color: #c8965a;
+    text-align: center;
+    padding: 1rem;
+}
+
 .button-list {
     margin-left: auto;
     height: 100%;
@@ -69,17 +81,3 @@ a, a:visited {
     height: 60%;
     margin: 1rem;
 }
-
-main {
-    margin: 2rem auto;
-    width: 80vw;
-    flex: 1;
-}
-
-footer {
-    background-color: #c8965a;
-    text-align: center;
-    padding: 1rem;
-}
-
-
