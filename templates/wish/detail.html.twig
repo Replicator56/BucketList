@@ -6,9 +6,13 @@
     <main>
         <div>
             <strong>{{ wish.title }}</strong>
-            <p>Description : {{ wish.description }}</p>
+            {% if wish.description is not null %}
+                <p>Description : {{ wish.description }}</p>
+            {% else %}
+                <p>Il n'y a pas de description</p>
+            {% endif %}
             <p>Auteur : {{ wish.author }}</p>
-            <p>Date de création : {{ wish.dateCreated | date('d/m/Y') }}</p>
+            <p>Date de création : {{ wish.dateCreated | date('Y-m-d') }}</p>
         </div>
     </main>
 {% endblock %}

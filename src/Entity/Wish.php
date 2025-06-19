@@ -14,22 +14,22 @@ class Wish
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 250)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[ORM\Column(type: Types::TEXT, length: 50)]
+    #[ORM\Column(type: Types::STRING, length: 50)]
     private ?string $author = null;
 
-    #[ORM\Column]
+    #[ORM\Column(options: ['default' => false])]
     private ?bool $isPublished = null;
 
     #[ORM\Column]
     private ?\DateTime $dateCreated = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?\DateTime $dateUpdated = null;
 
     public function getId(): ?int
