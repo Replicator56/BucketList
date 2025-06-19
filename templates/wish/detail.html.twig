@@ -4,6 +4,11 @@
 
 {% block main %}
     <main>
-        <h1>Détails d'un wish ... {{ id }}</h1>
+        <div>
+            <strong>{{ wish.title }}</strong>
+            <p>Description : {{ wish.description }}</p>
+            <p>Auteur : {{ wish.author }}</p>
+            <p>Date de création : {{ wish.dateCreated | date('d/m/Y') }}</p>
+        </div>
     </main>
 {% endblock %}
