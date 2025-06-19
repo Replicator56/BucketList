@@ -7,10 +7,8 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 
-class AppFixtures extends Fixture
+class WishFixtures extends Fixture
 {
-
-
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
@@ -21,8 +19,8 @@ class AppFixtures extends Fixture
             $wish->setDescription($faker->text(350));
             $wish->setAuthor($faker->text(50));
             $wish->setIsPublished(true);
-            $wish->setDateCreated(new \DateTime('now'));
-            $wish->setDateUpdated(new \DateTime(''));
+            $wish->setDateCreated(new \DateTime());
+            $wish->setDateUpdated(new \DateTime());
             $manager->persist($wish);
 
             $manager->flush();
