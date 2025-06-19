@@ -5,6 +5,10 @@
 {% block main %}
     <main>
         <h1>All wishes !!</h1>
+
+        {% for wish in wishes %}
+            <p><a href="{{ path('wish_details', { id: wish.id }) }}">{{ wish.title }}</a></p>
+        {% endfor %}
     </main>
 {% endblock %}
 
