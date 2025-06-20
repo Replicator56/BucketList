@@ -32,18 +32,6 @@ class WishType extends AbstractType
                 "attr" => ["checked" => "true"],
                 "label" => "Published"
             ])
-            ->add('imageFilename', FileType::class, [
-                'label' => 'Image (.jpg or .png file, max. 1Mo) :',
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File(
-                        maxSize: '1024k',
-                        extensions: ['jpg', 'jpeg', 'png'],
-                        extensionsMessage: 'Please upload a valid image',
-                    )
-                ],
-            ])
             ->add('Create', SubmitType::class);
     }
 

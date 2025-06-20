@@ -38,8 +38,6 @@ class Wish
     #[ORM\Column(nullable: true)]
     private ?\DateTime $dateUpdated = null;
 
-    private ?string $imageFilename = null;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -115,13 +113,5 @@ class Wish
         $this->dateUpdated = $dateUpdated;
 
         return $this;
-    }
-
-    public function getImageFilename(): ?string {
-        return $this->imageFilename;
-    }
-
-    public function setImageFilename(?string $imageFilename): void {
-        $this->imageFilename = $imageFilename;
     }
 }
