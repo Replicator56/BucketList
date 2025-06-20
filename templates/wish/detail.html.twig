@@ -13,6 +13,10 @@
             {% endif %}
             <p>Auteur : {{ wish.author }}</p>
             <p>Date de création : {{ wish.dateCreated | date('Y-m-d') }}</p>
+            <p>
+                <a href="{{ path('wish_delete', { id: wish.id }) }}"><button>Delete</button></a>
+                <a href="{{ path('wish_update', { id: wish.id }) }}"><button>Modify</button></a>
+            </p>
         </div>
     </main>
 {% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    Update wish
+{% endblock %}
+
+{% block main %}
+    <h1>Add your wishes !</h1>
+    {{ form_start(wishForm) }}
+    {{ form_widget(wishForm) }}
+    <button type="submit">Update</button>
+    {{ form_end(wishForm) }}
+{% endblock %}
+
