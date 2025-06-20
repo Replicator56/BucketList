@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\WishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: WishRepository::class)]
 class Wish
@@ -14,15 +15,20 @@ class Wish
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Assert\NotBlank(message: 'Please enter your idea\'s title!')]
+    #[Assert\Length(max: 250, maxMessage: 'Too long ! 250 characters at most !')]
     #[ORM\Column(type: Types::STRING, length: 250)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[Assert\NotBlank(message: 'Please enter your username !')]
+    #[Assert\Length(max: 50, maxMessage: 'Too long ! 50 characters at most !')]
     #[ORM\Column(type: Types::STRING, length: 50)]
     private ?string $author = null;
 
+    #[Assert\IsTrue(message: 'Your idea must be published when created !')]
     #[ORM\Column(options: ['default' => false])]
     private ?bool $isPublished = null;
 
@@ -31,6 +37,8 @@ class Wish
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $dateUpdated = null;
+
+    private ?string $imageFilename = null;
 
     public function getId(): ?int
     {
@@ -107,5 +115,13 @@ class Wish
         $this->dateUpdated = $dateUpdated;
 
         return $this;
+    }
+
+    public function getImageFilename(): ?string {
+        return $this->imageFilename;
+    }
+
+    public function setImageFilename(?string $imageFilename): void {
+        $this->imageFilename = $imageFilename;
     }
 }
