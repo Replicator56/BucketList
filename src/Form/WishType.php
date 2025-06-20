@@ -31,8 +31,7 @@ class WishType extends AbstractType
             ->add('isPublished', CheckboxType::class, [
                 "attr" => ["checked" => "true"],
                 "label" => "Published"
-            ])
-            ->add('Create', SubmitType::class);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

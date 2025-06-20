@@ -41,24 +41,83 @@ class WishController extends AbstractController
     ) : Response
     {
         $wish = new Wish();
-        $wish->setDateCreated(new \DateTime());
         $wishForm = $this->createForm(WishType::class, $wish);
 
         $wishForm->handleRequest($request);
 
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
+                $wish->setDateCreated(new \DateTime());
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully added!");
+                return $this->redirectToRoute('wish_details', ["id" => $wish->getId()]);
             } catch (Exception $exception) {
                 $this->addFlash('warning', $exception->getMessage());
             }
-            return $this->redirectToRoute('wish_details', ["id" => $wish->getId()]);
         }
 
         return $this->render('wish/create.html.twig', [
             'wishForm' => $wishForm
         ]);
     }
+
+    #[Route("/{id}/update", name: "update", requirements: ["id" => "\d+"])]
+    public function update(
+        int $id,
+        WishRepository $wishRepository,
+        EntityManagerInterface $entityManager,
+        Request $request
+    ) : Response {
+        $wish = $wishRepository->find($id);
+
+        if (!$wish) {
+            throw $this->createNotFoundException("Le souhait n'existe pas");
+        }
+
+        $wishForm = $this->createForm(WishType::class, $wish);
+
+        $wishForm->handleRequest($request);
+
+        if ($wishForm->isSubmitted() && $wishForm->isValid()) {
+            try {
+                $wish->setDateUpdated(new \DateTime());
+                $entityManager->persist($wish);
+                $entityManager->flush();
+                $this->addFlash('success', "Idea successfully updated!");
+                return $this->redirectToRoute('wish_details', ["id" => $wish->getId()]);
+            } catch (Exception $exception) {
+                $this->addFlash('warning', $exception->getMessage());
+            }
+        }
+
+        return $this->render("wish/update.html.twig", [
+            'wishForm' => $wishForm
+        ]);
+    }
+
+    #[Route("/{id}/delete", name: "delete", requirements: ["id" => "\d+"])]
+    public function delete(
+        int $id,
+        EntityManagerInterface $entityManager,
+        WishRepository $wishRepository
+    ) : Response {
+        $wish = $wishRepository->find($id);
+
+        if (!$wish) {
+            throw $this->createNotFoundException("Le souhait n'existe pas");
+        }
+
+        try {
+            $entityManager->remove($wish);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('wish_all');
+        } catch (Exception $exception) {
+            $this->addFlash('warning', $exception->getMessage());
+        }
+
+        return $this->redirectToRoute('wish_details', ["id" => $wish->getId()]);
+    }
+
 }
