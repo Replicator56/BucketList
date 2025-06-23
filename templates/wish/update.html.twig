@@ -5,10 +5,13 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Add your wishes !</h1>
-    {{ form_start(wishForm) }}
-    {{ form_widget(wishForm) }}
-    <button type="submit">Update</button>
-    {{ form_end(wishForm) }}
-{% endblock %}
+    <main>
+        <h1>Update your wish!</h1>
 
+        {{ form_start(wishForm) }}
+        {{ form_widget(wishForm) }}
+
+        <button type="submit">Update</button>
+        {{ form_end(wishForm) }}
+    </main>
+{% endblock %}
