@@ -35,8 +35,7 @@ class WishType extends AbstractType
 
             ->add('isPublished', CheckboxType::class, [
                 "attr" => ["checked" => "true"],
-                "label" => "Published",
-                "required" => false
+                "label" => "Published"
             ])
 
             ->add('category', EntityType::class, [
