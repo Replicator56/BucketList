@@ -3,19 +3,8 @@
 {% block title %}Wishes detail{% endblock %}
 
 {% block main %}
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="alert alert-{{ label }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-
     <main>
         <div class="wish-detail">
-            {% if wish.image %}
-                <img class="wish-image" src="{{ asset('uploads/images/wish/' ~ wish.image) }}" alt="Wish image" />
-            {% endif %}
 
             <h2 class="wish-title">{{ wish.title }}</h2>
 

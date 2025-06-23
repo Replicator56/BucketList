@@ -29,7 +29,6 @@ class Wish
     #[ORM\Column(type: Types::STRING, length: 50)]
     private ?string $author = null;
 
-    #[Assert\IsTrue(message: 'Your idea must be published when created !')]
     #[ORM\Column(options: ['default' => false])]
     private ?bool $isPublished = null;
 
@@ -38,10 +37,6 @@ class Wish
 
     #[ORM\Column(nullable: true)]
     private ?\DateTime $dateUpdated = null;
-
-
-    #[ORM\Column(type: Types::STRING)]
-    private ?string $image = null;
 
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'wishes')]
     #[ORM\JoinColumn(nullable: false)]
@@ -120,18 +115,6 @@ class Wish
     public function setDateUpdated(\DateTime $dateUpdated): static
     {
         $this->dateUpdated = $dateUpdated;
-
-        return $this;
-    }
-
-    public function getImage(): ?string
-    {
-        return $this->image;
-    }
-
-    public function setImage(?string $image): static
-    {
-        $this->image = $image;
 
         return $this;
     }

@@ -24,7 +24,6 @@ class WishFixtures extends Fixture implements DependentFixtureInterface
             $wish->setIsPublished(true);
             $wish->setDateCreated(new \DateTime());
             $wish->setDateUpdated(new \DateTime());
-            $wish->setImage(null);
 
             // Choisir une catégorie aléatoire
             $randomIndex = rand(0, 4);

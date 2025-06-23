@@ -32,43 +32,18 @@ class WishType extends AbstractType
             ->add('author', TextType::class, [
                 "label" => "Your username : "
             ])
-            ->add('image', FileType::class, [
-                'label' => 'Your image : ',
-                'mapped' => false,
-                'required' => false,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '1M',
-                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
-                        'mimeTypesMessage' => 'Please upload a valid image format',
-                    ]),
-                ],
-            ])
-
-            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
-                $wish = $event->getData();
-                $form = $event->getForm();
-
-                if ($wish && $wish->getImage()) {
-                    $form->add('deleteImage', CheckboxType::class, [
-                        'label' => 'Delete current image',
-                        'mapped' => false,
-                        'required' => false,
-                    ]);
-                }
-            })
-
 
             ->add('isPublished', CheckboxType::class, [
                 "attr" => ["checked" => "true"],
-                "label" => "Published"
+                "label" => "Published",
+                "required" => false
             ])
 
             ->add('category', EntityType::class, [
-            'class' => Category::class,
-            'choice_label' => 'name',
-            'placeholder' => 'Choose a category',
-        ]);
+                'class' => Category::class,
+                'choice_label' => 'name',
+                'placeholder' => 'Choose a category',
+            ]);
 
     }
 
