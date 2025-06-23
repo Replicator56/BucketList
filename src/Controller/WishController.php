@@ -8,6 +8,8 @@ use App\Repository\WishRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -38,29 +40,36 @@ class WishController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request
-    ) : Response
-    {
+    ): Response {
         $wish = new Wish();
         $wishForm = $this->createForm(WishType::class, $wish);
-
         $wishForm->handleRequest($request);
-
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
+                $imageFile = $wishForm->get('image')->getData();
+                if ($imageFile) {
+                    $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                    $imageFile->move(
+                        $this->getParameter('wish_images_directory'),
+                        $newFilename
+                    );
+                    $wish->setImage($newFilename);
+                }
                 $wish->setDateCreated(new \DateTime());
                 $entityManager->persist($wish);
                 $entityManager->flush();
+
                 $this->addFlash('success', "Idea successfully added!");
                 return $this->redirectToRoute('wish_details', ["id" => $wish->getId()]);
             } catch (Exception $exception) {
                 $this->addFlash('warning', $exception->getMessage());
             }
         }
-
         return $this->render('wish/create.html.twig', [
-            'wishForm' => $wishForm
+            'wishForm' => $wishForm->createView()
         ]);
     }
+
 
     #[Route("/{id}/update", name: "update", requirements: ["id" => "\d+"])]
     public function update(
@@ -68,33 +77,68 @@ class WishController extends AbstractController
         WishRepository $wishRepository,
         EntityManagerInterface $entityManager,
         Request $request
-    ) : Response {
+    ): Response {
         $wish = $wishRepository->find($id);
 
         if (!$wish) {
             throw $this->createNotFoundException("Le souhait n'existe pas");
         }
 
-        $wishForm = $this->createForm(WishType::class, $wish);
+        $form = $this->createForm(WishType::class, $wish);
+        $form->handleRequest($request);
 
-        $wishForm->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $imageFile = $form->has('image') ? $form->get('image')->getData() : null;
+            $deleteImage = $form->has('deleteImage') && $form->get('deleteImage')->getData();
 
-        if ($wishForm->isSubmitted() && $wishForm->isValid()) {
+            // Nouvelle image
+            if ($imageFile) {
+                $newFilename = uniqid() . '.' . $imageFile->guessExtension();
+                try {
+                    $imageFile->move(
+                        $this->getParameter('wish_images_directory'),
+                        $newFilename
+                    );
+
+                    if ($wish->getImage()) {
+                        $oldImagePath = $this->getParameter('wish_images_directory') . '/' . $wish->getImage();
+                        if (file_exists($oldImagePath)) {
+                            unlink($oldImagePath);
+                        }
+                    }
+
+                    $wish->setImage($newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('warning', "Error uploading image: " . $e->getMessage());
+                }
+
+                // Suppression image existante
+            } elseif ($deleteImage && $wish->getImage()) {
+                $oldImagePath = $this->getParameter('wish_images_directory') . '/' . $wish->getImage();
+                if (file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+                $wish->setImage(null);
+            }
+
             try {
                 $wish->setDateUpdated(new \DateTime());
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully updated!");
                 return $this->redirectToRoute('wish_details', ["id" => $wish->getId()]);
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $this->addFlash('warning', $exception->getMessage());
             }
         }
 
         return $this->render("wish/update.html.twig", [
-            'wishForm' => $wishForm
+            'wishForm' => $form->createView(),
+            'wish' => $wish,
         ]);
     }
+
+
 
     #[Route("/{id}/delete", name: "delete", requirements: ["id" => "\d+"])]
     public function delete(

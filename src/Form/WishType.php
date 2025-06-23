@@ -2,8 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Wish;
 use Doctrine\DBAL\Types\BooleanType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
@@ -11,6 +13,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
 
@@ -28,10 +32,44 @@ class WishType extends AbstractType
             ->add('author', TextType::class, [
                 "label" => "Your username : "
             ])
+            ->add('image', FileType::class, [
+                'label' => 'Your image : ',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1M',
+                        'mimeTypes' => ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+                        'mimeTypesMessage' => 'Please upload a valid image format',
+                    ]),
+                ],
+            ])
+
+            ->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+                $wish = $event->getData();
+                $form = $event->getForm();
+
+                if ($wish && $wish->getImage()) {
+                    $form->add('deleteImage', CheckboxType::class, [
+                        'label' => 'Delete current image',
+                        'mapped' => false,
+                        'required' => false,
+                    ]);
+                }
+            })
+
+
             ->add('isPublished', CheckboxType::class, [
                 "attr" => ["checked" => "true"],
                 "label" => "Published"
-            ]);
+            ])
+
+            ->add('category', EntityType::class, [
+            'class' => Category::class,
+            'choice_label' => 'name',
+            'placeholder' => 'Choose a category',
+        ]);
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

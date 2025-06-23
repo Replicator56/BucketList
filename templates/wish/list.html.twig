@@ -3,11 +3,19 @@
 {% block title %}All wishes{% endblock %}
 
 {% block main %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <main>
         <h1>All wishes !!</h1>
         <ul>
             {% for wish in wishes %}
-            <li><a href="{{ path('wish_details', { id: wish.id }) }}">{{ wish.title }}</a></li>
+            <li><a href="{{ path('wish_details', { id: wish.id }) }}">{{ wish.title }} [{{ wish.category}}]</a></li>
         </ul>
         {% endfor %}
     </main>

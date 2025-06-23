@@ -5,10 +5,12 @@ Add yours !
 {% endblock %}
 
 {% block main %}
+    <main>
     <h1>Add your wishes !</h1>
     {{ form_start(wishForm) }}
     {{ form_widget(wishForm) }}
     <button type="submit">Create</button>
     {{ form_end(wishForm) }}
+    </main>
 {% endblock %}
 

@@ -3,20 +3,40 @@
 {% block title %}Wishes detail{% endblock %}
 
 {% block main %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
     <main>
-        <div>
-            <strong>{{ wish.title }}</strong>
-            {% if wish.description is not null %}
-                <p>Description : {{ wish.description }}</p>
-            {% else %}
-                <p>Il n'y a pas de description</p>
+        <div class="wish-detail">
+            {% if wish.image %}
+                <img class="wish-image" src="{{ asset('uploads/images/wish/' ~ wish.image) }}" alt="Wish image" />
             {% endif %}
-            <p>Auteur : {{ wish.author }}</p>
-            <p>Date de création : {{ wish.dateCreated | date('Y-m-d') }}</p>
-            <p>
-                <a href="{{ path('wish_delete', { id: wish.id }) }}"><button>Delete</button></a>
-                <a href="{{ path('wish_update', { id: wish.id }) }}"><button>Modify</button></a>
-            </p>
+
+            <h2 class="wish-title">{{ wish.title }}</h2>
+
+            {% if wish.description is not null %}
+                <p class="wish-description"><strong>Description :</strong> {{ wish.description }}</p>
+            {% else %}
+                <p class="wish-description">Il n'y a pas de description</p>
+            {% endif %}
+
+            <p class="wish-meta"><strong>Auteur :</strong> {{ wish.author }}</p>
+            <p class="wish-meta"><strong>Date de création :</strong> {{ wish.dateCreated | date('Y-m-d') }}</p>
+            <p class="wish-meta"><strong>Catégorie :</strong> {{ wish.category }}</p>
+
+            <div class="wish-buttons">
+                <a href="{{ path('wish_delete', { id: wish.id }) }}">
+                    <button class="btn btn-delete">Delete</button>
+                </a>
+                <a href="{{ path('wish_update', { id: wish.id }) }}">
+                    <button class="btn btn-modify">Modify</button>
+                </a>
+            </div>
         </div>
     </main>
 {% endblock %}

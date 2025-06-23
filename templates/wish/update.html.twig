@@ -5,10 +5,20 @@
 {% endblock %}
 
 {% block main %}
-    <h1>Add your wishes !</h1>
-    {{ form_start(wishForm) }}
-    {{ form_widget(wishForm) }}
-    <button type="submit">Update</button>
-    {{ form_end(wishForm) }}
-{% endblock %}
+    <main>
+        <h1>Update your wish!</h1>
 
+        {{ form_start(wishForm) }}
+        {{ form_widget(wishForm) }}
+
+        {% if wish.image %}
+            <div>
+                <p>Current image:</p>
+                <img src="{{ asset('uploads/images/wish/' ~ wish.image) }}" alt="Current Image" style="max-height: 200px;">
+            </div>
+        {% endif %}
+
+        <button type="submit">Update</button>
+        {{ form_end(wishForm) }}
+    </main>
+{% endblock %}
