@@ -82,7 +82,6 @@ class WishController extends AbstractController
             throw $this->createNotFoundException("Le souhait n'existe pas");
         }
 
-//        $isAdmin = $this->isGranted("ROLE_ADMIN");
         $isAuthor = $this->getUser()->getUserIdentifier() === $wish->getAuthor()->getUserIdentifier();
 
         if (!$isAuthor) {
