@@ -125,13 +125,9 @@ class WishController extends AbstractController
         $isAuthor = $this->getUser()->getUserIdentifier() === $wish->getAuthor()->getUserIdentifier();
         $isAdmin = $this->isGranted("ROLE_ADMIN");
 
-        // !$isAuthor and !$isAdmin = true
-        //
-
         if (!($isAuthor or $isAdmin)) {
             throw $this->createAccessDeniedException("Acces denied");
         }
-
 
         try {
             $entityManager->remove($wish);
