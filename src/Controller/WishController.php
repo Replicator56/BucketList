@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Wish;
 use App\Form\WishType;
 use App\Repository\WishRepository;
+use App\Service\Censurator;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +38,8 @@ class WishController extends AbstractController
     #[Route("/create", name: "create")]
     public function create(
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        Censurator $censurator,
     ) : Response
     {
         $user = $this->getUser();
@@ -55,6 +57,10 @@ class WishController extends AbstractController
             try {
                 $wish->setDateCreated(new \DateTime());
                 $wish->setAuthor($user);
+                $cleanWish = $censurator->purify($wish->getTitle());
+                $wish->setTitle($cleanWish);
+                $cleanWish = $censurator->purify($wish->getDescription());
+                $wish->setDescription($cleanWish);
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully added!");
@@ -74,7 +80,8 @@ class WishController extends AbstractController
         int $id,
         WishRepository $wishRepository,
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        Censurator $censurator,
     ) : Response {
         $wish = $wishRepository->find($id);
 
@@ -95,6 +102,10 @@ class WishController extends AbstractController
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
                 $wish->setDateUpdated(new \DateTime());
+                $cleanWish = $censurator->purify($wish->getTitle());
+                $wish->setTitle($cleanWish);
+                $cleanWish = $censurator->purify($wish->getDescription());
+                $wish->setDescription($cleanWish);
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully updated!");
