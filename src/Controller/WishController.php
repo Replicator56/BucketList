@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Wish;
 use App\Form\WishType;
 use App\Repository\WishRepository;
+use App\Service\CensuratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,7 +38,8 @@ class WishController extends AbstractController
     #[Route("/create", name: "create")]
     public function create(
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        CensuratorService $censuratorService
     ) : Response
     {
         $user = $this->getUser();
@@ -53,6 +55,14 @@ class WishController extends AbstractController
 
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
+                $originalTitle = $wish->getTitle();
+                $purifiedTitle = $censuratorService->purify($originalTitle);
+                $wish->setTitle($purifiedTitle);
+
+                $originalDescription = $wish->getDescription();
+                $purifiedDescription = $censuratorService->purify($originalDescription);
+                $wish->setDescription($purifiedDescription);
+
                 $wish->setDateCreated(new \DateTime());
                 $wish->setAuthor($user);
                 $entityManager->persist($wish);
@@ -63,6 +73,8 @@ class WishController extends AbstractController
                 $this->addFlash('warning', $exception->getMessage());
             }
         }
+
+
 
         return $this->render('wish/create.html.twig', [
             'wishForm' => $wishForm
