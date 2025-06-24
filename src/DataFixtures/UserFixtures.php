@@ -21,18 +21,16 @@ class UserFixtures extends Fixture
         $user = new User();
         $user->setUsername('user');
         $user->setEmail('user@example.com');
-        $user->setRoles(['ROLE_USER']);
-        $user->setIsVerified(true);
         $user->setPassword($this->passwordHasher->hashPassword($user, 'password'));
+        $this->addReference('user', $user);
         $manager->persist($user);
-        $manager->flush();
 
         $admin = new User();
         $admin->setUsername('admin');
         $admin->setEmail('admin@example.com');
         $admin->setRoles(['ROLE_ADMIN']);
-        $admin->setIsVerified(true);
         $admin->setPassword($this->passwordHasher->hashPassword($admin, 'adminpass'));
+        $this->addReference('admin', $admin);
         $manager->persist($admin);
         $manager->flush();
     }

@@ -10,27 +10,27 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250623134913 extends AbstractMigration
+final class Version20250624122430 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return 'Migration Module 07 TP 01';
+        return '';
     }
 
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            CREATE TABLE category (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(50) NOT NULL, UNIQUE INDEX UNIQ_64C19C15E237E06 (name), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
+            CREATE TABLE user (id INT AUTO_INCREMENT NOT NULL, username VARCHAR(180) NOT NULL, email VARCHAR(180) NOT NULL, roles JSON NOT NULL, password VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_IDENTIFIER_USERNAME (username, email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE wish ADD category_id INT NOT NULL
+            ALTER TABLE wish ADD author_id INT NOT NULL, DROP author
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE wish ADD CONSTRAINT FK_D7D174C912469DE2 FOREIGN KEY (category_id) REFERENCES category (id)
+            ALTER TABLE wish ADD CONSTRAINT FK_D7D174C9F675F31B FOREIGN KEY (author_id) REFERENCES user (id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_D7D174C912469DE2 ON wish (category_id)
+            CREATE INDEX IDX_D7D174C9F675F31B ON wish (author_id)
         SQL);
     }
 
@@ -38,16 +38,16 @@ final class Version20250623134913 extends AbstractMigration
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql(<<<'SQL'
-            ALTER TABLE wish DROP FOREIGN KEY FK_D7D174C912469DE2
+            ALTER TABLE wish DROP FOREIGN KEY FK_D7D174C9F675F31B
         SQL);
         $this->addSql(<<<'SQL'
-            DROP TABLE category
+            DROP TABLE user
         SQL);
         $this->addSql(<<<'SQL'
-            DROP INDEX IDX_D7D174C912469DE2 ON wish
+            DROP INDEX IDX_D7D174C9F675F31B ON wish
         SQL);
         $this->addSql(<<<'SQL'
-            ALTER TABLE wish DROP category_id
+            ALTER TABLE wish ADD author VARCHAR(50) NOT NULL, DROP author_id
         SQL);
     }
 }

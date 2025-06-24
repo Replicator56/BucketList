@@ -35,7 +35,8 @@ class BucketAuthenticator extends AbstractLoginFormAuthenticator
             new UserBadge($username),
             new PasswordCredentials($request->getPayload()->getString('password')),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),            ]
+                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
+                ]
         );
     }
 
@@ -45,9 +46,7 @@ class BucketAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($targetPath);
         }
 
-        // For example:
-        // return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+         return new RedirectResponse($this->urlGenerator->generate('main_home'));
     }
 
     protected function getLoginUrl(Request $request): string

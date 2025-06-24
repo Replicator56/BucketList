@@ -3,14 +3,16 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username'])]
-#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_USERNAME', fields: ['username', 'email'])]
+#[UniqueEntity(fields: ['username', 'email'], message: 'There is already an account with this username or this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -36,8 +38,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?string $password = null;
 
-    #[ORM\Column]
-    private bool $isVerified = false;
+    /**
+     * @var Collection<int, Wish>
+     */
+    #[ORM\OneToMany(targetEntity: Wish::class, mappedBy: 'author', orphanRemoval: true)]
+    private Collection $wishes;
+
+    public function __construct()
+    {
+        $this->wishes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,14 +132,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->email = $email;
     }
 
-    public function isVerified(): bool
+    /**
+     * @return Collection<int, Wish>
+     */
+    public function getWishes(): Collection
     {
-        return $this->isVerified;
+        return $this->wishes;
     }
 
-    public function setIsVerified(bool $isVerified): static
+    public function addWish(Wish $wish): static
     {
-        $this->isVerified = $isVerified;
+        if (!$this->wishes->contains($wish)) {
+            $this->wishes->add($wish);
+            $wish->setAuthor($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWish(Wish $wish): static
+    {
+        if ($this->wishes->removeElement($wish)) {
+            // set the owning side to null (unless already changed)
+            if ($wish->getAuthor() === $this) {
+                $wish->setAuthor(null);
+            }
+        }
 
         return $this;
     }

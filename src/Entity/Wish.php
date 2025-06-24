@@ -24,11 +24,6 @@ class Wish
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
-    #[Assert\NotBlank(message: 'Please enter your username !')]
-    #[Assert\Length(max: 50, maxMessage: 'Too long ! 50 characters at most !')]
-    #[ORM\Column(type: Types::STRING, length: 50)]
-    private ?string $author = null;
-
     #[ORM\Column(options: ['default' => false])]
     private ?bool $isPublished = null;
 
@@ -41,6 +36,10 @@ class Wish
     #[ORM\ManyToOne(targetEntity: Category::class, inversedBy: 'wishes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
+
+    #[ORM\ManyToOne(inversedBy: 'wishes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $author = null;
 
     public function getId(): ?int
     {
@@ -67,18 +66,6 @@ class Wish
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
-        return $this;
-    }
-
-    public function getAuthor(): ?string
-    {
-        return $this->author;
-    }
-
-    public function setAuthor(string $author): static
-    {
-        $this->author = $author;
 
         return $this;
     }
@@ -131,5 +118,15 @@ class Wish
         return $this;
     }
 
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
 
+    public function setAuthor(?User $author): static
+    {
+        $this->author = $author;
+
+        return $this;
+    }
 }

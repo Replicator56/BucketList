@@ -40,6 +40,12 @@ class WishController extends AbstractController
         Request $request
     ) : Response
     {
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw $this->createAccessDeniedException("User is not logged in");
+        }
+
         $wish = new Wish();
         $wishForm = $this->createForm(WishType::class, $wish);
 
@@ -48,6 +54,7 @@ class WishController extends AbstractController
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
                 $wish->setDateCreated(new \DateTime());
+                $wish->setAuthor($user);
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully added!");
@@ -73,6 +80,13 @@ class WishController extends AbstractController
 
         if (!$wish) {
             throw $this->createNotFoundException("Le souhait n'existe pas");
+        }
+
+//        $isAdmin = $this->isGranted("ROLE_ADMIN");
+        $isAuthor = $this->getUser()->getUserIdentifier() === $wish->getAuthor()->getUserIdentifier();
+
+        if (!$isAuthor) {
+            throw $this->createAccessDeniedException("User is not the author");
         }
 
         $wishForm = $this->createForm(WishType::class, $wish);
@@ -107,6 +121,17 @@ class WishController extends AbstractController
         if (!$wish) {
             throw $this->createNotFoundException("Le souhait n'existe pas");
         }
+
+        $isAuthor = $this->getUser()->getUserIdentifier() === $wish->getAuthor()->getUserIdentifier();
+        $isAdmin = $this->isGranted("ROLE_ADMIN");
+
+        // !$isAuthor and !$isAdmin = true
+        //
+
+        if (!($isAuthor or $isAdmin)) {
+            throw $this->createAccessDeniedException("Acces denied");
+        }
+
 
         try {
             $entityManager->remove($wish);

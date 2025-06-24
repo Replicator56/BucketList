@@ -14,7 +14,7 @@
                 <p class="wish-description">Il n'y a pas de description</p>
             {% endif %}
 
-            <p class="wish-meta"><strong>Auteur :</strong> {{ wish.author }}</p>
+            <p class="wish-meta"><strong>Auteur :</strong> {{ wish.author.username }}</p>
             <p class="wish-meta"><strong>Date de création :</strong> {{ wish.dateCreated | date('Y-m-d') }}</p>
             <p class="wish-meta"><strong>Catégorie :</strong> {{ wish.category }}</p>
 
