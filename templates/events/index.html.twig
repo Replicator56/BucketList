@@ -5,15 +5,11 @@
 {% block main %}
     <h1>Search Events</h1>
 
-    <form method="get" action="{{ path('app_events') }}">
-        <label for="city">City :</label>
-        <input type="text" id="city" name="city" required>
-
-        <label for="date">Date :</label>
-        <input type="date" id="date" name="date" required>
-
-        <button type="submit">Search</button>
-    </form>
+    {{ form_start(form) }}
+    {{ form_row(form.city) }}
+    {{ form_row(form.date) }}
+    <button type="submit">Search</button>
+    {{ form_end(form) }}
 
     {% if events %}
         <h2>Résults</h2>
@@ -22,17 +18,19 @@
                 {% set fields = event.fields %}
                 <li>
                     <h3>{{ fields.title_fr ?? 'Title not available' }}</h3>
-                    {% if fields.thumbnail %}
+                    {% if fields.thumbnail is defined and fields.thumbnail is not empty %}
                         <img src="{{ fields.thumbnail }}" alt="Event's picture" width="150">
+                    {% else %}
+                        <p><em>No image available</em></p>
                     {% endif %}
                     <p><strong>Date :</strong> {{ fields.daterange_fr ?? 'Not specified' }}</p>
                     <p><strong>Lieu :</strong> {{ fields.location_name ?? '' }} - {{ fields.location_address ?? '' }}</p>
                     <p>{{ fields.description_fr|raw }}</p>
-                    <a id="lien"  href="{{ fields.canonicalurl }}" target="_blank">See event</a>
+                    <a id="lien" href="{{ fields.canonicalurl }}" target="_blank">See event</a>
                 </li>
             {% endfor %}
         </ul>
-    {% elseif app.request.query.get('city') %}
+    {% elseif form.vars.submitted %}
         <p>No event found</p>
     {% endif %}
 {% endblock %}
