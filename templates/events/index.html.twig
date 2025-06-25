@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Events{% endblock %}
+
+{% block main %}
+    <h1>Search Events</h1>
+
+    <form method="get" action="{{ path('app_events') }}">
+        <label for="city">City :</label>
+        <input type="text" id="city" name="city" required>
+
+        <label for="date">Date :</label>
+        <input type="date" id="date" name="date" required>
+
+        <button type="submit">Search</button>
+    </form>
+
+    {% if events %}
+        <h2>Résults</h2>
+        <ul>
+            {% for event in events %}
+                {% set fields = event.fields %}
+                <li>
+                    <h3>{{ fields.title_fr ?? 'Title not available' }}</h3>
+                    {% if fields.thumbnail %}
+                        <img src="{{ fields.thumbnail }}" alt="Event's picture" width="150">
+                    {% endif %}
+                    <p><strong>Date :</strong> {{ fields.daterange_fr ?? 'Not specified' }}</p>
+                    <p><strong>Lieu :</strong> {{ fields.location_name ?? '' }} - {{ fields.location_address ?? '' }}</p>
+                    <p>{{ fields.description_fr|raw }}</p>
+                    <a id="lien"  href="{{ fields.canonicalurl }}" target="_blank">See event</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% elseif app.request.query.get('city') %}
+        <p>No event found</p>
+    {% endif %}
+{% endblock %}
