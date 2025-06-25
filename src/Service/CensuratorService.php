@@ -11,6 +11,14 @@ class Censurator
         'fuck',
     ];
 
+    /**
+     * @param array|string[] $badWords
+     */
+    public function __construct(array $badWords)
+    {
+        $this->badWords = $badWords;
+    }
+
     public function purify(string $text): string
     {
         foreach ($this->badWords as $badWord) {
