@@ -4,22 +4,26 @@ namespace App\Service;
 
 class CensuratorService
 {
-    private const CENSURE_WORDS = [
-        "bad", "wrong", "beautiful", "good", "pink", "chat"
+    private array $badWords = [
+        'idiot',
+        'stupid',
+        'shit',
+        'fuck',
     ];
 
     /**
-     * Method purify allows to censure a sentence
-     * @param string $string
-     * @return array|string|string[]
+     * @param array|string[] $badWords
      */
-    public function purify(string $string) {
 
-        foreach(static::CENSURE_WORDS as $word) {
-            $replacement = str_repeat('*', mb_strlen($word));
-            $string = str_ireplace($word, $replacement, $string);
+
+    public function purify(string $text): string
+    {
+        foreach ($this->badWords as $badWord) {
+            $pattern = '/\b' . preg_quote($badWord, '/') . '\b/i';
+            $replacement = str_repeat('*', mb_strlen($badWord));
+            $text = preg_replace($pattern, $replacement, $text);
         }
 
-        return $string;
+        return $text;
     }
 }
