@@ -2,7 +2,7 @@
 
 namespace App\Service;
 
-class Censurator
+class CensuratorService
 {
     private array $badWords = [
         'idiot',
@@ -14,10 +14,7 @@ class Censurator
     /**
      * @param array|string[] $badWords
      */
-    public function __construct(array $badWords)
-    {
-        $this->badWords = $badWords;
-    }
+
 
     public function purify(string $text): string
     {
