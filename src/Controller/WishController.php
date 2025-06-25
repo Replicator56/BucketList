@@ -39,7 +39,7 @@ class WishController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request,
-        CensuratorService $censuratorService
+        CensuratorService $censurator,
     ) : Response
     {
         $user = $this->getUser();
@@ -55,16 +55,12 @@ class WishController extends AbstractController
 
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
-                $originalTitle = $wish->getTitle();
-                $purifiedTitle = $censuratorService->purify($originalTitle);
-                $wish->setTitle($purifiedTitle);
-
-                $originalDescription = $wish->getDescription();
-                $purifiedDescription = $censuratorService->purify($originalDescription);
-                $wish->setDescription($purifiedDescription);
-
                 $wish->setDateCreated(new \DateTime());
                 $wish->setAuthor($user);
+                $cleanWish = $censurator->purify($wish->getTitle());
+                $wish->setTitle($cleanWish);
+                $cleanWish = $censurator->purify($wish->getDescription());
+                $wish->setDescription($cleanWish);
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully added!");
@@ -73,8 +69,6 @@ class WishController extends AbstractController
                 $this->addFlash('warning', $exception->getMessage());
             }
         }
-
-
 
         return $this->render('wish/create.html.twig', [
             'wishForm' => $wishForm
@@ -86,7 +80,8 @@ class WishController extends AbstractController
         int $id,
         WishRepository $wishRepository,
         EntityManagerInterface $entityManager,
-        Request $request
+        Request $request,
+        CensuratorService $censurator,
     ) : Response {
         $wish = $wishRepository->find($id);
 
@@ -107,6 +102,10 @@ class WishController extends AbstractController
         if ($wishForm->isSubmitted() && $wishForm->isValid()) {
             try {
                 $wish->setDateUpdated(new \DateTime());
+                $cleanWish = $censurator->purify($wish->getTitle());
+                $wish->setTitle($cleanWish);
+                $cleanWish = $censurator->purify($wish->getDescription());
+                $wish->setDescription($cleanWish);
                 $entityManager->persist($wish);
                 $entityManager->flush();
                 $this->addFlash('success', "Idea successfully updated!");

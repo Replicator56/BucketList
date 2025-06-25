@@ -224,3 +224,8 @@ a, a:visited {
 .alert-success {
     background-color: #28a745; /* vert classique bootstrap */
 }
+
+#lien {
+    text-decoration-line: underline;
+
+}
