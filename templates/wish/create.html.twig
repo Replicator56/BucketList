@@ -7,6 +7,8 @@ Add yours !
 {% block main %}
     <main>
         <h1>Add your wishes !</h1>
+        <li>
+        <a href="{{ path('app_events') }}">Events</a></li>
         {{ form_start(wishForm) }}
         {{ form_widget(wishForm) }}
         <button type="submit">Create</button>

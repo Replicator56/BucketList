@@ -5,7 +5,7 @@ namespace App\Controller;
 use App\Entity\Wish;
 use App\Form\WishType;
 use App\Repository\WishRepository;
-use App\Service\Censurator;
+use App\Service\CensuratorService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -39,7 +39,7 @@ class WishController extends AbstractController
     public function create(
         EntityManagerInterface $entityManager,
         Request $request,
-        Censurator $censurator,
+        CensuratorService $censurator,
     ) : Response
     {
         $user = $this->getUser();
@@ -81,7 +81,7 @@ class WishController extends AbstractController
         WishRepository $wishRepository,
         EntityManagerInterface $entityManager,
         Request $request,
-        Censurator $censurator,
+        CensuratorService $censurator,
     ) : Response {
         $wish = $wishRepository->find($id);
 
